@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.25.0.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e0944fdb129168f03a936248dbddb859b8f74f420c7a3c81406881c5b93560bc
+-- hash: 3bc4bf534b1e22ae468fb19951dad846f66066b935323f514b6c940cd5f5ed19
 
 name:             hspec-discover
 version:          2.4.8
@@ -12,7 +14,6 @@ copyright:        (c) 2012-2017 Simon Hengel
 author:           Simon Hengel <sol@typeful.net>
 maintainer:       Simon Hengel <sol@typeful.net>
 build-type:       Simple
-cabal-version:    >= 1.10
 category:         Testing
 stability:        experimental
 bug-reports:      https://github.com/hspec/hspec/issues
@@ -21,12 +22,11 @@ synopsis:         Automatically discover and run Hspec tests
 description:      Automatically discover and run Hspec tests
                   .
                   <http://hspec.github.io/hspec-discover.html>
-
 extra-source-files:
-    test-data/empty-dir/Foo/Bar/Baz/.placeholder
     test-data/nested-spec/Foo/Bar/BazSpec.hs
     test-data/nested-spec/Foo/BarSpec.hs
     test-data/nested-spec/FooSpec.hs
+    test-data/empty-dir/Foo/Bar/Baz/.placeholder
 
 source-repository head
   type: git

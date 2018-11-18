@@ -44,11 +44,9 @@ instance Ord DL
                 then  poj x > poj y
                 else poi x <= poi y
 
-canDiag :: (a -> a -> Bool) -> [a] -> [a] -> Int -> Int -> Int -> Int -> Bool
-canDiag eq as bs lena lenb = \ i j ->
+canDiag :: (a -> a -> Bool) -> Array Int a -> Array Int a -> Int -> Int -> Int -> Int -> Bool
+canDiag eq arAs arBs lena lenb = \ i j ->
    if i < lena && j < lenb then (arAs ! i) `eq` (arBs ! j) else False
-    where arAs = listArray (0,lena - 1) as
-          arBs = listArray (0,lenb - 1) bs
 
 dstep :: (Int -> Int -> Bool) -> [DL] -> [DL]
 dstep cd dls = hd:pairMaxes rst
@@ -73,8 +71,10 @@ lcs :: (a -> a -> Bool) -> [a] -> [a] -> [DI]
 lcs eq as bs = path . head . dropWhile (\dl -> poi dl /= lena || poj dl /= lenb) .
             concat . iterate (dstep cd) . (:[]) . addsnake cd $
             DL {poi=0,poj=0,path=[]}
-            where cd = canDiag eq as bs lena lenb
+            where cd = canDiag eq arAs arBs lena lenb
                   lena = length as; lenb = length bs
+                  arAs = listArray (0,lena - 1) as
+                  arBs = listArray (0,lenb - 1) bs
 
 -- | Takes two lists and returns a list of differences between them. This is
 -- 'getDiffBy' with '==' used as predicate.
