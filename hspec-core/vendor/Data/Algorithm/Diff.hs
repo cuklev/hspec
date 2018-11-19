@@ -44,37 +44,23 @@ instance Ord DL
                 then  poj x > poj y
                 else poi x <= poi y
 
-canDiag :: (a -> a -> Bool) -> Array Int a -> Array Int a -> Int -> Int -> Int -> Int -> Bool
-canDiag eq arAs arBs lena lenb = \ i j ->
-   if i < lena && j < lenb then (arAs ! i) `eq` (arBs ! j) else False
-
-dstep :: (Int -> Int -> Bool) -> [DL] -> [DL]
-dstep cd dls = hd:pairMaxes rst
-  where (hd:rst) = nextDLs dls
-        nextDLs [] = []
-        nextDLs (dl:rest) = dl':dl'':nextDLs rest
-          where dl'  = addsnake cd $ dl {poi=poi dl + 1, path=(F : pdl)}
-                dl'' = addsnake cd $ dl {poj=poj dl + 1, path=(S : pdl)}
-                pdl = path dl
-        pairMaxes [] = []
-        pairMaxes [x] = [x]
-        pairMaxes (x:y:rest) = max x y:pairMaxes rest
-
-addsnake :: (Int -> Int -> Bool) -> DL -> DL
-addsnake cd dl
-    | cd pi pj = addsnake cd $
-                 dl {poi = pi + 1, poj = pj + 1, path=(B : path dl)}
-    | otherwise   = dl
-    where pi = poi dl; pj = poj dl
-
 lcs :: (a -> a -> Bool) -> [a] -> [a] -> [DI]
-lcs eq as bs = path . head . dropWhile (\dl -> poi dl /= lena || poj dl /= lenb) .
-            concat . iterate (dstep cd) . (:[]) . addsnake cd $
-            DL {poi=0,poj=0,path=[]}
-            where cd = canDiag eq arAs arBs lena lenb
-                  lena = length as; lenb = length bs
-                  arAs = listArray (0,lena - 1) as
-                  arBs = listArray (0,lenb - 1) bs
+lcs eq as bs = snd $ dp!(lena,lenb)
+  where lena = length as
+        lenb = length bs
+
+        arAs = listArray (0, lena - 1) as
+        arBs = listArray (0, lenb - 1) bs
+
+        dp = listArray ((0, 0), (lena, lenb)) $ step <$> [0..lena] <*> [0..lenb]
+
+        step 0 0 = (0, [])
+        step 0 c = fmap (S:) (dp!(0,c-1))
+        step r 0 = fmap (F:) (dp!(r-1,0))
+        step r c
+          | (arAs!(r-1)) `eq` (arBs!(c-1)) = let (n, xs) = dp!(r-1,c-1) in n `seq` (n+1, B:xs)
+          | fst (dp!(r-1,c)) > fst (dp!(r,c-1)) = fmap (F:) (dp!(r-1,c))
+          | otherwise                           = fmap (S:) (dp!(r,c-1))
 
 -- | Takes two lists and returns a list of differences between them. This is
 -- 'getDiffBy' with '==' used as predicate.
