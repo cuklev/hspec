@@ -37,13 +37,6 @@ data DI = F | S | B deriving (Show, Eq)
 -- newtype to only perform equality on side of a tuple).
 data Diff a = First a | Second a | Both a a deriving (Show, Eq, Functor)
 
-data DL = DL {poi :: !Int, poj :: !Int, path::[DI]} deriving (Show, Eq)
-
-instance Ord DL
-        where x <= y = if poi x == poi y
-                then  poj x > poj y
-                else poi x <= poi y
-
 lcs :: (a -> a -> Bool) -> [a] -> [a] -> [DI]
 lcs eq as bs = snd $ dp!(lena,lenb)
   where lena = length as
