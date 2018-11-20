@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.25.0.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8fe188c041ee9e718cde6c89c51a73813fd9b52b772533362134c232c80261f5
+-- hash: ba41a22bf03e86b2dcfbc3ee96107cb1fde29bbbcd25d4c00e50c30f748b2a4d
 
 name:             hspec-core
 version:          2.4.8
@@ -13,7 +15,6 @@ copyright:        (c) 2011-2017 Simon Hengel,
                   (c) 2011 Greg Weber
 maintainer:       Simon Hengel <sol@typeful.net>
 build-type:       Simple
-cabal-version:    >= 1.10
 category:         Testing
 stability:        experimental
 bug-reports:      https://github.com/hspec/hspec/issues
@@ -131,6 +132,7 @@ test-suite spec
       Control.Concurrent.Async
       Data.Algorithm.Diff
       All
+      Data.Algorithm.DiffSpec
       Helper
       Mock
       Test.Hspec.Core.CompatSpec
