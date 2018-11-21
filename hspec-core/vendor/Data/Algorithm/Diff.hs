@@ -38,7 +38,11 @@ data DI = F | S | B deriving (Show, Eq)
 -- newtype to only perform equality on side of a tuple).
 data Diff a = First a | Second a | Both a a deriving (Show, Eq, Functor)
 
-data DL = DL {longest :: !Int, path :: !DI} deriving (Show, Eq)
+-- data DL = DL {longest :: {-# UNPACK #-} !Int, path :: {-# UNPACK #-} !DI} deriving (Show, Eq)
+data DL = DL {-# UNPACK #-} !Int !DI deriving (Show, Eq)
+
+longest (DL n _) = n
+path (DL _ p) = p
 
 lcs :: (a -> a -> Bool) -> [a] -> [a] -> [DI]
 lcs eq as bs = back lena lenb
