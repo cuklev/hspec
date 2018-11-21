@@ -38,14 +38,10 @@ data DI = F | S | B deriving (Show, Eq)
 -- newtype to only perform equality on side of a tuple).
 data Diff a = First a | Second a | Both a a deriving (Show, Eq, Functor)
 
--- data DL = DL {longest :: {-# UNPACK #-} !Int, path :: {-# UNPACK #-} !DI} deriving (Show, Eq)
-data DL = DL {-# UNPACK #-} !Int !DI deriving (Show, Eq)
-
-longest (DL n _) = n
-path (DL _ p) = p
+data DL = DL {longest :: !Int, path :: !DI} deriving (Show, Eq)
 
 lcs :: (a -> a -> Bool) -> [a] -> [a] -> [DI]
-lcs eq as bs = back lena lenb
+lcs eq as bs = back 0 0
     where lena = length as; lenb = length bs
 
           arAs = listArray (0, lena-1) as
@@ -53,24 +49,24 @@ lcs eq as bs = back lena lenb
 
           dp = listArray ((0, 0), (lena, lenb)) $ liftA2 step [0..lena] [0..lenb]
 
-          step 0 0 = DL 0 B
-          step 0 _ = DL 0 S
-          step _ 0 = DL 0 F
           step r c
-            | (arAs!(lena-r)) `eq` (arBs!(lenb-c))
-                        = let n = longest $ dp!(r-1, c-1)
+            | c == lenb = DL 0 F
+            | r == lena = DL 0 S
+            | (arAs!r) `eq` (arBs!c)
+                        = let n = longest $ dp!(r+1, c+1)
                           in DL (n+1) B
-            | otherwise = let n1 = longest $ dp!(r-1, c)
-                              n2 = longest $ dp!(r, c-1)
+            | otherwise = let n1 = longest $ dp!(r+1, c)
+                              n2 = longest $ dp!(r, c+1)
                           in if n1 >= n2
                                 then DL n1 F
                                 else DL n2 S
 
-          back 0 0 = []
-          back r c = case path $ dp!(r, c) of
-                        F -> F : back (r-1)   c
-                        S -> S : back   r   (c-1)
-                        B -> B : back (r-1) (c-1)
+          back r c
+            | r == lena && c == lenb = []
+            | otherwise = case path $ dp!(r, c) of
+                            F -> F : back (r+1)   c
+                            S -> S : back   r   (c+1)
+                            B -> B : back (r+1) (c+1)
 
 -- | Takes two lists and returns a list of differences between them. This is
 -- 'getDiffBy' with '==' used as predicate.
